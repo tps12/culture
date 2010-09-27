@@ -48,6 +48,13 @@ class Simulation:
                     end = (start[0], start[1] + self.grid_size)
                     color = self.color(self.sites[x][y], self.sites[x][y+1])
                     pygame.draw.line(screen, color, start, end, self.LINE)
+                    
+        for x in range(self.dimensions[0]):
+            for y in range(self.dimensions[1]):
+                pygame.draw.circle(screen, (0,0,0),
+                                   (self.bg_rect.left + (x+1) * self.grid_size,
+                                    self.bg_rect.top + (y+1) * self.grid_size),
+                                   self.LINE)
 
     def random_site(self):
         return (random.randint(0, len(self.sites)-1),
