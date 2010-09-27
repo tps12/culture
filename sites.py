@@ -29,7 +29,7 @@ class Simulation:
         screen.fill((255,255,255), self.bg_rect)
 
     def similarity(self, p1, p2):
-        return sum(c1 == c2 for c1, c2 in zip(p1, p2))/float(len(p1))
+        return sum((c1 - c2)*(c1-c2)/100. for c1, c2 in zip(p1, p2))/float(len(p1))
 
     def color(self, p1, p2):
         gray = 255 - int(self.similarity(p1, p2) * 255)
