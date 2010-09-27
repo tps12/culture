@@ -12,6 +12,8 @@ class Simulation:
 
     DRAW_FRAMES = 1000
 
+    FUDGE = 0.1
+
     def __init__(self, dimensions):
         self.dimensions = dimensions
         self.grid_size = min(self.WIDTH/(self.dimensions[0] + 1),
@@ -29,7 +31,7 @@ class Simulation:
         screen.fill((255,255,255), self.bg_rect)
 
     def similarity(self, p1, p2):
-        return sum((c1 - c2)*(c1-c2) for c1, c2 in zip(p1, p2))/float(len(p1))
+        return min(1, sum((c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2))/len(p1) + self.FUDGE)
 
     def color(self, p1, p2):
         gray = 255 - int(self.similarity(p1, p2) * 255)
@@ -103,6 +105,9 @@ class Simulation:
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         done = True
+                    elif event.key == K_SPACE:
+                        for x in range(self.dimensions[0]):
+                            print self.sites[0]
 
             self.try_event()
             n += 1
