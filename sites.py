@@ -1,3 +1,4 @@
+from math import sqrt
 import random
 
 import matplotlib.pyplot as plt
@@ -12,7 +13,7 @@ class Simulation:
 
     LINE = 4
 
-    DRAW_FRAMES = 10000
+    DRAW_FRAMES = 100
 
     FUDGE = 0.1
 
@@ -25,7 +26,7 @@ class Simulation:
                                    (self.dimensions[0] + 1) * self.grid_size,
                                    (self.dimensions[1] + 1) * self.grid_size)
 
-        self.sites = [[[random.random() for i in range(5)]
+        self.sites = [[[random.random() for i in range(10)]
                        for y in range(self.dimensions[1])]
                       for x in range(self.dimensions[0])]
 
@@ -33,7 +34,7 @@ class Simulation:
         screen.fill((255,255,255), self.bg_rect)
 
     def similarity(self, p1, p2):
-        return min(1, sum((c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2))/len(p1) + self.FUDGE)
+        return sqrt(sum((c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2)))/sqrt(len(p1))
 
     def color(self, p1, p2):
         gray = 255 - int(self.similarity(p1, p2) * 255)
@@ -93,6 +94,10 @@ class Simulation:
             self.interact(active_site, neighb_site)
 
     def report(self):
+        for x in range(len(self.sites)):
+            for y in range(len(self.sites[0])):
+                print self.similarity(self.sites[0][0],
+                                      self.sites[x][y])
         for i in range(len(self.sites[0][0])):
             plt.subplot(len(self.sites[0][0]),1,i).set_ylim(0,100)
             plt.hist([self.sites[x][y][i] for x in
