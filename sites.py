@@ -79,12 +79,15 @@ class Simulation:
             neighbors.append((x,y+1))
         return random.sample(neighbors, 1)[0]
 
+    def sway(self, active, neighb, index):
+        active[index] = neighb[index]
+
     def interact(self, active, neighb):
         different = [i for i in range(len(active))
                      if active[i] != neighb[i]]
         if len(different) > 0:
             i = random.sample(different, 1)[0]
-            active[i] = neighb[i]
+            self.sway(active, neighb, i)
 
     def try_event(self):
         active = self.random_site()
