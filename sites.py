@@ -1,5 +1,7 @@
 import random
 
+import matplotlib.pyplot as plt
+
 import pygame
 from pygame.locals import *
 
@@ -10,7 +12,7 @@ class Simulation:
 
     LINE = 4
 
-    DRAW_FRAMES = 1000
+    DRAW_FRAMES = 10000
 
     FUDGE = 0.1
 
@@ -89,6 +91,10 @@ class Simulation:
         neighb_site = self.sites[neighb[0]][neighb[1]]
         if random.random() < self.similarity(active_site, neighb_site):
             self.interact(active_site, neighb_site)
+
+    def report(self):
+        fig = plt.figure()
+        plt.show()
     
     def run(self):
         pygame.init()
@@ -106,8 +112,7 @@ class Simulation:
                     if event.key == K_ESCAPE:
                         done = True
                     elif event.key == K_SPACE:
-                        for x in range(self.dimensions[0]):
-                            print self.sites[0]
+                        self.report()
 
             self.try_event()
             n += 1
