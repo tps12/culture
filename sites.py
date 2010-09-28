@@ -93,7 +93,8 @@ class Simulation:
             self.interact(active_site, neighb_site)
 
     def report(self):
-        fig = plt.figure()
+        for i in range(len(self.sites[0][0])):
+            plt.subplot(len(self.sites[0][0]),1,i)
         plt.show()
     
     def run(self):
