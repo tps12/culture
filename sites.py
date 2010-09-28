@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, exp
 import random
 
 import matplotlib.pyplot as plt
@@ -26,8 +26,8 @@ class Simulation:
                                    (self.dimensions[0] + 1) * self.grid_size,
                                    (self.dimensions[1] + 1) * self.grid_size)
 
-        self.sites = [[[max(0, min(1, random.gauss(0.5, 0.05)))
-                        for i in range(10)]
+        self.sites = [[[max(0, min(1, random.gauss(0.5, 0.125)))
+                        for i in range(5)]
                        for y in range(self.dimensions[1])]
                       for x in range(self.dimensions[0])]
 
@@ -35,8 +35,8 @@ class Simulation:
         screen.fill((255,255,255), self.bg_rect)
 
     def similarity(self, p1, p2):
-        return 1 - sqrt(sum((c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2)))/sqrt(len(p1))
-
+        return 1 - sqrt(sum([(c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2)]))
+    
     def color(self, p1, p2):
         gray = 255 - int(self.similarity(p1, p2) * 255)
         return (gray, gray, gray)
@@ -112,6 +112,8 @@ class Simulation:
 
         screen = pygame.display.set_mode((self.WIDTH,self.HEIGHT), HWSURFACE)
         pygame.display.set_caption('Sites')
+
+        self.report()
 
         done = False
         n = 0
