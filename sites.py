@@ -26,7 +26,8 @@ class Simulation:
                                    (self.dimensions[0] + 1) * self.grid_size,
                                    (self.dimensions[1] + 1) * self.grid_size)
 
-        self.sites = [[[random.random() for i in range(10)]
+        self.sites = [[[max(0, min(1, random.gauss(0.5, 0.05)))
+                        for i in range(10)]
                        for y in range(self.dimensions[1])]
                       for x in range(self.dimensions[0])]
 
