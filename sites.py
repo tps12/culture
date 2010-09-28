@@ -83,10 +83,8 @@ class Simulation:
         active[index] = (active[index] + neighb[index])/2
 
     def interact(self, active, neighb):
-        different = [i for i in range(len(active))
-                     if active[i] != neighb[i]]
-        if len(different) > 0:
-            i = random.sample(different, 1)[0]
+        i = max(range(len(active)), key=lambda i: abs(active[i] - neighb[i]))
+        if active[i] != neighb[i]:
             self.sway(active, neighb, i)
 
     def try_event(self):
