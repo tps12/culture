@@ -94,11 +94,11 @@ class Simulation:
 
     def report(self):
         for i in range(len(self.sites[0][0])):
-            plt.subplot(len(self.sites[0][0]),1,i)
+            plt.subplot(len(self.sites[0][0]),1,i).set_ylim(0,100)
             plt.hist([self.sites[x][y][i] for x in
                       [x for x in range(len(self.sites)) for y in
                        [y for y in range(len(self.sites[0]))]]],
-                     10, (0,1))
+                     100, (0,1))
         plt.show()
     
     def run(self):
