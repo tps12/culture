@@ -1,8 +1,6 @@
 from math import sqrt, exp
 import random
 
-import matplotlib.pyplot as plt
-
 import pygame
 from pygame.locals import *
 
@@ -12,27 +10,56 @@ class Simulation:
     HEIGHT = 480
 
     LINE = 4
+    HIST_WIDTH = 10
 
-    DRAW_FRAMES = 1
+    DRAW_FRAMES = 10
 
     FUDGE = 0.1
 
+    DIMENSIONS = 5
+
     def __init__(self, dimensions):
         self.dimensions = dimensions
-        self.grid_size = min(self.WIDTH/(self.dimensions[0] + 1),
+        self.grid_size = min(self.WIDTH/2/(self.dimensions[0] + 1),
                              self.HEIGHT/(self.dimensions[1] + 1))
-        self.bg_rect = pygame.Rect(max(0, (self.WIDTH - (self.dimensions[0] + 1) * self.grid_size) / 2),
+        self.bg_rect = pygame.Rect(max(0, (self.WIDTH/2 - (self.dimensions[0] + 1) * self.grid_size) / 2),
                                    max(0, (self.HEIGHT - (self.dimensions[1] + 1) * self.grid_size) / 2),
                                    (self.dimensions[0] + 1) * self.grid_size,
                                    (self.dimensions[1] + 1) * self.grid_size)
+        self.hist_rect = self.bg_rect.move(self.bg_rect.width,0)
 
-        self.sites = [[[random.random() #max(0, min(1, random.gauss(0.5, 0.125)))
-                        for i in range(5)]
+        def uniform():
+            return random.random()
+        def gaussian():
+            return max(0, min(1, random.gauss(0.5, 0.125)))
+
+        self.sites = [[[uniform()
+                        for i in range(self.DIMENSIONS)]
                        for y in range(self.dimensions[1])]
                       for x in range(self.dimensions[0])]
 
-    def background(self, screen):
-        screen.fill((255,255,255), self.bg_rect)
+    def background(self, screen, rect):
+        screen.fill((255,255,255), rect)
+
+    def hist(self, screen):
+        height = self.hist_rect.height / self.DIMENSIONS
+        sites = self.dimensions[0] * self.dimensions[1]
+        
+        for i in range(self.DIMENSIONS):
+            counts = [0 for n in range(self.hist_rect.width/self.HIST_WIDTH)]
+            for value in [self.sites[x][y][i]
+                          for y in range(self.dimensions[1])
+                          for x in range(self.dimensions[0])]:
+                counts[int(value * len(counts))
+                       if value < 1
+                       else len(counts)-1] += 1
+            for j in range(len(counts)):
+                if counts[j] > 0:
+                    bar = height * counts[j]/float(sites)
+                    screen.fill((0,255,0),
+                                pygame.Rect(self.hist_rect.left + j*self.HIST_WIDTH,
+                                            self.hist_rect.top + (i+1)*height - bar,
+                                            self.HIST_WIDTH, bar))
 
     def similarity(self, p1, p2):
         return 1 - sqrt(sum([(c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2)]))/sqrt(len(p1))
@@ -94,27 +121,12 @@ class Simulation:
         neighb_site = self.sites[neighb[0]][neighb[1]]
         if random.random() < self.similarity(active_site, neighb_site):
             self.interact(active_site, neighb_site)
-
-    def report(self):
-        for x in range(len(self.sites)):
-            for y in range(len(self.sites[0])):
-                print self.similarity(self.sites[0][0],
-                                      self.sites[x][y])
-        for i in range(len(self.sites[0][0])):
-            plt.subplot(len(self.sites[0][0]),1,i).set_ylim(0,100)
-            plt.hist([self.sites[x][y][i] for x in
-                      [x for x in range(len(self.sites)) for y in
-                       [y for y in range(len(self.sites[0]))]]],
-                     100, (0,1))
-        plt.show()
     
     def run(self):
         pygame.init()
 
         screen = pygame.display.set_mode((self.WIDTH,self.HEIGHT), HWSURFACE)
         pygame.display.set_caption('Sites')
-
-        self.report()
 
         done = False
         n = 0
@@ -125,15 +137,15 @@ class Simulation:
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         done = True
-                    elif event.key == K_SPACE:
-                        self.report()
 
             self.try_event()
             n += 1
             if n > self.DRAW_FRAMES:
-                
-                self.background(screen)
+
+                for rect in [self.bg_rect, self.hist_rect]:
+                    self.background(screen, rect)
                 self.lines(screen)
+                self.hist(screen)
 
                 pygame.display.flip()
                 
