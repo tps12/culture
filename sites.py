@@ -80,7 +80,7 @@ class Simulation:
         return random.sample(neighbors, 1)[0]
 
     def sway(self, active, neighb, index):
-        active[index] = neighb[index]
+        active[index] = (active[index] + neighb[index])/2
 
     def interact(self, active, neighb):
         different = [i for i in range(len(active))
