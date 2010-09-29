@@ -1,4 +1,4 @@
-from math import sqrt, exp
+from math import sqrt
 import random
 
 import pygame
@@ -6,17 +6,17 @@ from pygame.locals import *
 
 class Simulation:
 
-    WIDTH = 640
-    HEIGHT = 480
+    WIDTH = 800
+    HEIGHT = 600
 
     LINE = 4
     HIST_WIDTH = 10
 
-    DRAW_FRAMES = 10
+    DRAW_FRAMES = 100
 
-    FUDGE = 0.1
+    DIMENSIONS = 15
 
-    DIMENSIONS = 5
+    THRESHOLD = 0.3
 
     def __init__(self, dimensions):
         self.dimensions = dimensions
@@ -62,7 +62,8 @@ class Simulation:
                                             self.HIST_WIDTH, bar))
 
     def similarity(self, p1, p2):
-        return 1 - sqrt(sum([(c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2)]))/sqrt(len(p1))
+        d = sqrt(sum([(c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2)]))/sqrt(len(p1))
+        return 0 if d > self.THRESHOLD else 1 - d
     
     def color(self, p1, p2):
         gray = 255 - int(self.similarity(p1, p2) * 255)
@@ -152,4 +153,4 @@ class Simulation:
                 n = 0
 
 if __name__ == '__main__':
-    Simulation((10,10)).run()
+    Simulation((12,12)).run()
