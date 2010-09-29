@@ -16,6 +16,8 @@ class Simulation:
 
     DIMENSIONS = 15
 
+    EPSILON = 0.001
+
     THRESHOLD = 0.3
 
     KUNG_FU_INDEX = DIMENSIONS-1
@@ -110,7 +112,8 @@ class Simulation:
         return random.sample(neighbors, 1)[0]
 
     def sway(self, active, neighb, index):
-        active[index] = (active[index] + neighb[index])/2
+        a, n = active[index], neighb[index]
+        active[index] = (a + n)/2 if abs(a-n) > self.EPSILON else n
 
     def interact(self, active, neighb):
         i = max(range(len(active)), key=lambda i: abs(active[i] - neighb[i]))
