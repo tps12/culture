@@ -18,6 +18,8 @@ class Simulation:
 
     THRESHOLD = 0.3
 
+    KUNG_FU_INDEX = DIMENSIONS-1
+
     def __init__(self, dimensions):
         self.dimensions = dimensions
         self.grid_size = min(self.WIDTH/2/(self.dimensions[0] + 1),
@@ -122,6 +124,9 @@ class Simulation:
         neighb_site = self.sites[neighb[0]][neighb[1]]
         if random.random() < self.similarity(active_site, neighb_site):
             self.interact(active_site, neighb_site)
+            if (0 <= self.KUNG_FU_INDEX < len(active_site) and
+                active_site[self.KUNG_FU_INDEX] > 1):
+                exit()
     
     def run(self):
         pygame.init()
@@ -140,6 +145,7 @@ class Simulation:
                         done = True
 
             self.try_event()
+
             n += 1
             if n > self.DRAW_FRAMES:
 
