@@ -12,7 +12,7 @@ class Simulation:
     LINE = 4
     HIST_WIDTH = 10
 
-    DRAW_FRAMES = 100
+    DRAW_FRAMES = 1000
 
     DIMENSIONS = 15
 
@@ -125,10 +125,12 @@ class Simulation:
         else:
             sign = -1
         if d > self.EPSILON:
-            delta = max(0, min(d, random.gauss(self.DELTA/2, self.DELTA/8)))
+            if d > self.DELTA:
+                d = self.DELTA
+            delta = max(0, min(d, random.gauss(d/2, d/8)))
             if 0 <= self.CONFORMITY_INDEX < self.DIMENSIONS:
-                delta *= active[self.CONFORMITY_INDEX]
-            active[index] += sign * delta
+                delta *= (2*active[self.CONFORMITY_INDEX]-1)
+            active[index] = max(0, min(1, a + sign * delta))
         else:
             active[index] = n
 
