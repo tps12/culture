@@ -13,6 +13,7 @@ class Simulation:
     HIST_WIDTH = 10
 
     DRAW_FRAMES = 1000
+    LIMIT = 100000
 
     DIMENSIONS = 15
 
@@ -158,6 +159,7 @@ class Simulation:
 
         done = False
         n = 0
+        steps = 0
         while not done:
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -166,7 +168,9 @@ class Simulation:
                     if event.key == K_ESCAPE:
                         done = True
 
-            self.try_event()
+            if self.LIMIT == 0 or steps < self.LIMIT:
+                self.try_event()
+                steps += 1
 
             n += 1
             if n > self.DRAW_FRAMES:
