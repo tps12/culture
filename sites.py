@@ -5,8 +5,7 @@ import pygame
 from pygame.locals import *
 
 class Dimension:
-    def __init__(self, index, shape, color):
-        self.index = index
+    def __init__(self, shape, color):
         self.shape = shape
         self.color = color
 
@@ -21,17 +20,18 @@ class Simulation:
     DRAW_FRAMES = 1000
     LIMIT = 0
 
-    DIMENSIONS = 15
-
     DELTA = 0.25
     EPSILON = 0.001
 
     THRESHOLD = 1
 
-#    CONFORMITY = Dimension(0, lambda x: 1 - 2 * pow(x - 1,2), (255,255,0))
+#    CONFORMITY = Dimension(lambda x: 1 - 2 * pow(x - 1,2), (255,255,0))
     CONFORMITY_INDEX = 0
     CONVICTION_INDEX = 1
-    KUNG_FU_INDEX = DIMENSIONS-1
+
+    DIMENSIONS = [Dimension(None, (0,255,0)) for i in range(15)]
+
+    KUNG_FU_INDEX = len(DIMENSIONS)-1
 
     def __init__(self, dimensions):
         self.dimensions = dimensions
@@ -49,7 +49,7 @@ class Simulation:
             return max(0, min(1, random.gauss(0.5, 0.125)))
 
         self.sites = [[[uniform()
-                        for i in range(self.DIMENSIONS)]
+                        for d in self.DIMENSIONS]
                        for y in range(self.dimensions[1])]
                       for x in range(self.dimensions[0])]
 
@@ -57,11 +57,11 @@ class Simulation:
         screen.fill((255,255,255), rect)
 
     def hist(self, screen):
-        height = self.hist_rect.height / self.DIMENSIONS
+        height = self.hist_rect.height / len(self.DIMENSIONS)
         sites = self.dimensions[0] * self.dimensions[1]
         
-        for i in range(self.DIMENSIONS):
-            color = (0,255,0)
+        for i in range(len(self.DIMENSIONS)):
+            color = self.DIMENSIONS[i].color
             if i == self.CONFORMITY_INDEX:
                 color = (255,255,0)
             if i == self.CONVICTION_INDEX:
@@ -139,7 +139,7 @@ class Simulation:
             if d > self.DELTA:
                 d = self.DELTA
             delta = max(0, min(d, random.gauss(d/2, d/8)))
-            if 0 <= self.CONFORMITY_INDEX < self.DIMENSIONS:
+            if 0 <= self.CONFORMITY_INDEX < len(self.DIMENSIONS):
                 delta *= (1 - 2 * pow(active[self.CONFORMITY_INDEX]-1, 2))
             active[index] = max(0, min(1, a + sign * delta))
         else:
@@ -147,7 +147,7 @@ class Simulation:
 
     def mill(self, active, index):
         delta = max(-self.DELTA, min(self.DELTA, random.gauss(0, self.DELTA/4)))
-        if 0 <= self.CONVICTION_INDEX < self.DIMENSIONS:
+        if 0 <= self.CONVICTION_INDEX < len(self.DIMENSIONS):
             delta *= (1 - self.CONVICTION_INDEX)
         active[index] = max(0, min(1, active[index] + delta))
 
