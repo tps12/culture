@@ -27,7 +27,7 @@ class Simulation:
     THRESHOLD = 1
 
     CONFORMITY = Dimension((255,255,0), 0, lambda x: 1 - 2 * pow(x - 1,2))
-    CONVICTION = Dimension((0,255,255), 1)
+    CONVICTION = Dimension((0,255,255), 1, lambda x: x)
 
     DIMENSIONS = [CONFORMITY, CONVICTION] + [Dimension((0,255,0))
                                              for i in range(13)]
@@ -145,7 +145,7 @@ class Simulation:
     def mill(self, active, index):
         delta = max(-self.DELTA, min(self.DELTA, random.gauss(0, self.DELTA/4)))
         if self.CONVICTION in self.DIMENSIONS:
-            delta *= (1 - active[self.CONVICTION.index])
+            delta *= (1 - self.CONVICTION.shape(active[self.CONVICTION.index]))
         active[index] = max(0, min(1, active[index] + delta))
 
     def interact(self, active, neighb):
