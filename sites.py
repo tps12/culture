@@ -27,9 +27,10 @@ class Simulation:
     THRESHOLD = 1
 
     CONFORMITY = Dimension((255,255,0), lambda x: 1 - 2 * pow(x - 1,2), 0)
-    CONVICTION_INDEX = 1
+    CONVICTION = Dimension((0,255,255), lambda x: x, 1)
 
-    DIMENSIONS = [CONFORMITY] + [Dimension((0,255,0)) for i in range(14)]
+    DIMENSIONS = [CONFORMITY, CONVICTION] + [Dimension((0,255,0))
+                                             for i in range(13)]
 
     KUNG_FU_INDEX = len(DIMENSIONS)-1
 
@@ -62,8 +63,6 @@ class Simulation:
         
         for i in range(len(self.DIMENSIONS)):
             color = self.DIMENSIONS[i].color
-            if i == self.CONVICTION_INDEX:
-                color = (0,255,255)
             counts = [0 for n in range(self.hist_rect.width/self.HIST_WIDTH)]
             for value in [self.sites[x][y][i]
                           for y in range(self.dimensions[1])
@@ -145,8 +144,8 @@ class Simulation:
 
     def mill(self, active, index):
         delta = max(-self.DELTA, min(self.DELTA, random.gauss(0, self.DELTA/4)))
-        if 0 <= self.CONVICTION_INDEX < len(self.DIMENSIONS):
-            delta *= (1 - self.CONVICTION_INDEX)
+        if self.CONVICTION in self.DIMENSIONS:
+            delta *= (1 - active[self.CONVICTION.index])
         active[index] = max(0, min(1, active[index] + delta))
 
     def interact(self, active, neighb):
