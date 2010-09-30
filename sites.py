@@ -13,7 +13,7 @@ class Simulation:
     HIST_WIDTH = 10
 
     DRAW_FRAMES = 1000
-    LIMIT = 100000
+    LIMIT = 0
 
     DIMENSIONS = 15
 
@@ -130,7 +130,7 @@ class Simulation:
                 d = self.DELTA
             delta = max(0, min(d, random.gauss(d/2, d/8)))
             if 0 <= self.CONFORMITY_INDEX < self.DIMENSIONS:
-                delta *= (2*active[self.CONFORMITY_INDEX]-1)
+                delta *= (1 - 2 * pow(active[self.CONFORMITY_INDEX]-1, 2))
             active[index] = max(0, min(1, a + sign * delta))
         else:
             active[index] = n
