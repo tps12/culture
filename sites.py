@@ -135,6 +135,10 @@ class Simulation:
         else:
             active[index] = n
 
+    def mill(self, active, index):
+        delta = max(-self.DELTA, min(self.DELTA, random.gauss(0, self.DELTA/4)))
+        active[index] = max(0, min(1, active[index] + delta))
+
     def interact(self, active, neighb):
         i = max(range(len(active)), key=lambda i: abs(active[i] - neighb[i]))
         if active[i] != neighb[i]:
@@ -150,6 +154,8 @@ class Simulation:
             if (0 <= self.KUNG_FU_INDEX < len(active_site) and
                 active_site[self.KUNG_FU_INDEX] > 1):
                 exit()
+        else:
+            self.mill(active_site, random.randint(0, len(active_site)-1))
     
     def run(self):
         pygame.init()
