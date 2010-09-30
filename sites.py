@@ -30,7 +30,7 @@ class Simulation:
     CONVICTION = Dimension((0,255,255), 1, lambda x: x)
 
     DIMENSIONS = [CONFORMITY, CONVICTION] + [Dimension((0,255,0))
-                                             for i in range(13)]
+                                             for i in range(3)]
 
     KUNG_FU_INDEX = len(DIMENSIONS)-1
 
@@ -53,6 +53,8 @@ class Simulation:
                         for d in self.DIMENSIONS]
                        for y in range(self.dimensions[1])]
                       for x in range(self.dimensions[0])]
+
+        self.selection = None
 
     def background(self, screen, rect):
         screen.fill((255,255,255), rect)
@@ -106,6 +108,12 @@ class Simulation:
                                    (self.bg_rect.left + (x+1) * self.grid_size,
                                     self.bg_rect.top + (y+1) * self.grid_size),
                                    self.LINE)
+
+        if self.selection != None:
+            pygame.draw.circle(screen, (0,0,255),
+                               (self.bg_rect.left + (self.selection[0]+1) * self.grid_size,
+                                self.bg_rect.top + (self.selection[1]+1) * self.grid_size),
+                               self.LINE + 2, 1)
 
     def random_site(self):
         return (random.randint(0, len(self.sites)-1),
@@ -182,6 +190,14 @@ class Simulation:
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         done = True
+                elif event.type == MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+                    edge = self.bg_rect.topleft
+                    coords = [int((pos[i] - edge[i])/float(self.grid_size) - 0.5)
+                              for i in range(2)]
+                    if (0 <= coords[0] < self.dimensions[0] and
+                        0 <= coords[1] < self.dimensions[1]):
+                        self.selection = coords if self.selection != coords else None
 
             if self.LIMIT == 0 or steps < self.LIMIT:
                 self.try_event()
