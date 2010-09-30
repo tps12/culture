@@ -30,7 +30,7 @@ class Simulation:
     CONVICTION = Dimension((0,255,255), 1, lambda x: x)
 
     DIMENSIONS = [CONFORMITY, CONVICTION] + [Dimension((0,255,0))
-                                             for i in range(3)]
+                                             for i in range(13)]
 
     KUNG_FU_INDEX = len(DIMENSIONS)-1
 
@@ -75,10 +75,17 @@ class Simulation:
             for j in range(len(counts)):
                 if counts[j] > 0:
                     bar = height * counts[j]/float(sites)
-                    screen.fill(color,
-                                pygame.Rect(self.hist_rect.left + j*self.HIST_WIDTH,
-                                            self.hist_rect.top + (i+1)*height - bar,
-                                            self.HIST_WIDTH, bar))
+                    rect = pygame.Rect(self.hist_rect.left + j*self.HIST_WIDTH,
+                                       self.hist_rect.top + (i+1)*height - bar,
+                                       self.HIST_WIDTH, bar)
+                    screen.fill(color, rect)
+                    if self.selection != None:
+                        sel = self.selection
+                        value = self.sites[sel[0]][sel[1]][i]
+                        if ((value < 1 and j == int(value * len(counts))) or
+                            value == 1 and j == len(counts)-1):
+                            pygame.draw.rect(screen, (0,0,255),
+                                             rect.inflate(4,4), 1)
 
     def similarity(self, p1, p2):
         d = sqrt(sum([(c1-c2)*(c1-c2) for c1, c2 in zip(p1, p2)]))/sqrt(len(p1))
