@@ -5,9 +5,10 @@ import pygame
 from pygame.locals import *
 
 class Dimension:
-    def __init__(self, shape, color):
-        self.shape = shape
+    def __init__(self, color, shape = None, index = None):
         self.color = color
+        self.shape = shape
+        self.index = index
 
 class Simulation:
 
@@ -25,11 +26,10 @@ class Simulation:
 
     THRESHOLD = 1
 
-#    CONFORMITY = Dimension(lambda x: 1 - 2 * pow(x - 1,2), (255,255,0))
-    CONFORMITY_INDEX = 0
+    CONFORMITY = Dimension((255,255,0), lambda x: 1 - 2 * pow(x - 1,2), 0)
     CONVICTION_INDEX = 1
 
-    DIMENSIONS = [Dimension(None, (0,255,0)) for i in range(15)]
+    DIMENSIONS = [CONFORMITY] + [Dimension((0,255,0)) for i in range(14)]
 
     KUNG_FU_INDEX = len(DIMENSIONS)-1
 
@@ -62,8 +62,6 @@ class Simulation:
         
         for i in range(len(self.DIMENSIONS)):
             color = self.DIMENSIONS[i].color
-            if i == self.CONFORMITY_INDEX:
-                color = (255,255,0)
             if i == self.CONVICTION_INDEX:
                 color = (0,255,255)
             counts = [0 for n in range(self.hist_rect.width/self.HIST_WIDTH)]
@@ -139,8 +137,8 @@ class Simulation:
             if d > self.DELTA:
                 d = self.DELTA
             delta = max(0, min(d, random.gauss(d/2, d/8)))
-            if 0 <= self.CONFORMITY_INDEX < len(self.DIMENSIONS):
-                delta *= (1 - 2 * pow(active[self.CONFORMITY_INDEX]-1, 2))
+            if self.CONFORMITY in self.DIMENSIONS:
+                delta *= self.CONFORMITY.shape(active[self.CONFORMITY.index])
             active[index] = max(0, min(1, a + sign * delta))
         else:
             active[index] = n
