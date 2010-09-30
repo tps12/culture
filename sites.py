@@ -21,6 +21,7 @@ class Simulation:
 
     THRESHOLD = 1
 
+    CONFORMITY_INDEX = 0
     KUNG_FU_INDEX = DIMENSIONS-1
 
     def __init__(self, dimensions):
@@ -51,6 +52,9 @@ class Simulation:
         sites = self.dimensions[0] * self.dimensions[1]
         
         for i in range(self.DIMENSIONS):
+            color = (0,255,0)
+            if i == self.CONFORMITY_INDEX:
+                color = (255,255,0)
             counts = [0 for n in range(self.hist_rect.width/self.HIST_WIDTH)]
             for value in [self.sites[x][y][i]
                           for y in range(self.dimensions[1])
@@ -61,7 +65,7 @@ class Simulation:
             for j in range(len(counts)):
                 if counts[j] > 0:
                     bar = height * counts[j]/float(sites)
-                    screen.fill((0,255,0),
+                    screen.fill(color,
                                 pygame.Rect(self.hist_rect.left + j*self.HIST_WIDTH,
                                             self.hist_rect.top + (i+1)*height - bar,
                                             self.HIST_WIDTH, bar))
@@ -122,6 +126,8 @@ class Simulation:
             sign = -1
         if d > self.EPSILON:
             delta = max(0, min(d, random.gauss(self.DELTA/2, self.DELTA/8)))
+            if 0 <= self.CONFORMITY_INDEX < self.DIMENSIONS:
+                delta *= active[self.CONFORMITY_INDEX]
             active[index] += sign * delta
         else:
             active[index] = n
