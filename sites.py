@@ -4,6 +4,12 @@ import random
 import pygame
 from pygame.locals import *
 
+class Dimension:
+    def __init__(self, index, shape, color):
+        self.index = index
+        self.shape = shape
+        self.color = color
+
 class Simulation:
 
     WIDTH = 800
@@ -22,6 +28,7 @@ class Simulation:
 
     THRESHOLD = 1
 
+#    CONFORMITY = Dimension(0, lambda x: 1 - 2 * pow(x - 1,2), (255,255,0))
     CONFORMITY_INDEX = 0
     CONVICTION_INDEX = 1
     KUNG_FU_INDEX = DIMENSIONS-1
