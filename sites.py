@@ -16,9 +16,10 @@ class Simulation:
 
     DIMENSIONS = 15
 
+    DELTA = 0.25
     EPSILON = 0.001
 
-    THRESHOLD = 0.3
+    THRESHOLD = 1
 
     KUNG_FU_INDEX = DIMENSIONS-1
 
@@ -113,7 +114,17 @@ class Simulation:
 
     def sway(self, active, neighb, index):
         a, n = active[index], neighb[index]
-        active[index] = (a + n)/2 if abs(a-n) > self.EPSILON else n
+        d = a-n
+        sign = 1
+        if d < 0:
+            d = -d
+        else:
+            sign = -1
+        if d > self.EPSILON:
+            delta = max(0, min(d, random.gauss(self.DELTA/2, self.DELTA/8)))
+            active[index] += sign * delta
+        else:
+            active[index] = n
 
     def interact(self, active, neighb):
         i = max(range(len(active)), key=lambda i: abs(active[i] - neighb[i]))
