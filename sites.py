@@ -5,10 +5,10 @@ import pygame
 from pygame.locals import *
 
 class Dimension:
-    def __init__(self, color, shape = None, index = None):
+    def __init__(self, color, index = None, shape = None):
         self.color = color
-        self.shape = shape
         self.index = index
+        self.shape = shape
 
 class Simulation:
 
@@ -26,8 +26,8 @@ class Simulation:
 
     THRESHOLD = 1
 
-    CONFORMITY = Dimension((255,255,0), lambda x: 1 - 2 * pow(x - 1,2), 0)
-    CONVICTION = Dimension((0,255,255), lambda x: x, 1)
+    CONFORMITY = Dimension((255,255,0), 0, lambda x: 1 - 2 * pow(x - 1,2))
+    CONVICTION = Dimension((0,255,255), 1)
 
     DIMENSIONS = [CONFORMITY, CONVICTION] + [Dimension((0,255,0))
                                              for i in range(13)]
